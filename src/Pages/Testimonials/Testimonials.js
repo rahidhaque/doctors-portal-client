@@ -33,7 +33,7 @@ const Testimonials = () => {
             <div className='grid grid-cols-1 lg:grid-cols-3 gap-4 mt-14'>
                 {
                     reviews.map(review => <Testimonial
-                        key={review.id}
+                        key={review._id}
                         review={review}
                     >
                     </Testimonial>)
@@ -46,15 +46,15 @@ const Testimonials = () => {
                 </div>
                 <form className='text-center my-5'>
                     <div>
-                        <input type="email" placeholder="Email Address" class="input input-bordered input-primary w-full max-w-sm mb-4" />
+                        <input type="email" placeholder="Email Address" className="input input-bordered input-primary w-full max-w-sm mb-4" />
                     </div>
                     <div>
-                        <input type="text" placeholder="Subject" class="input input-bordered input-primary w-full max-w-sm mb-4" />
+                        <input type="text" placeholder="Subject" className="input input-bordered input-primary w-full max-w-sm mb-4" />
                     </div>
                     <div>
-                        <textarea class="textarea w-full max-w-sm mb-4" placeholder="Bio"></textarea>
+                        <textarea className="textarea w-full max-w-sm mb-4" placeholder="Bio"></textarea>
                     </div>
-                    <input type="button" class="btn btn-primary uppercase text-white font-bold bg-gradient-to-r from-secondary to-primary" value="Submit" />
+                    <input type="button" className="btn btn-primary uppercase text-white font-bold bg-gradient-to-r from-secondary to-primary" value="Submit" />
                 </form>
             </div>
         </div>
