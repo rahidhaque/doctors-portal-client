@@ -1,32 +1,41 @@
 import React from 'react';
-import { useSignInWithEmailAndPassword, useSignInWithGoogle } from 'react-firebase-hooks/auth';
+import { useCreateUserWithEmailAndPassword, useSignInWithGoogle, useUpdateProfile } from 'react-firebase-hooks/auth';
+import { useForm } from 'react-hook-form';
+import { Link, useNavigate } from 'react-router-dom';
 import auth from '../../firebase.init';
-import { useForm } from "react-hook-form";
 import Loading from '../Shared/Loading/Loading';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
 
-
-const Login = () => {
+const Signup = () => {
     let error;
-    let navigate = useNavigate();
-    let location = useLocation();
-    let from = location.state?.from?.pathname || "/";
-
+    const navigate = useNavigate();
     const [
         signInWithGoogle,
         userGoogle,
         loadingGoogle,
-        errorGoogle] = useSignInWithGoogle(auth);
+        errorGoogle
+    ] = useSignInWithGoogle(auth);
+
     const [
-        signInWithEmailAndPassword,
+        createUserWithEmailAndPassword,
         userEmailPass,
         loadingEmailPass,
         errorEmailPass,
-    ] = useSignInWithEmailAndPassword(auth);
+    ] = useCreateUserWithEmailAndPassword(auth);
+
+    const [
+        updateProfile,
+        updating,
+        updateError
+    ] = useUpdateProfile(auth);
+
     const { register, formState: { errors }, handleSubmit } = useForm();
 
-    if (userGoogle || userEmailPass) {
-        navigate(from, { replace: true });
+    if (userGoogle) {
+        navigate('/home');
+    }
+
+    if (userEmailPass) {
+        navigate('/login');
     }
 
     if (errorGoogle) {
@@ -36,24 +45,47 @@ const Login = () => {
         error = <span class="label-text-alt text-red-500">{errorEmailPass?.message}</span>;
     }
 
-    if (loadingGoogle || loadingEmailPass) {
+    if (updateError) {
+        error = <span class="label-text-alt text-red-500">{updateError?.message}</span>;
+    }
+
+    if (loadingGoogle || loadingEmailPass || updating) {
         return <Loading></Loading>;
     }
 
-    const onSubmit = data => {
+    const onSubmit = async data => {
         console.log(data);
-        signInWithEmailAndPassword(data.email, data.password);
+        await createUserWithEmailAndPassword(data.email, data.password);
+        await updateProfile({ displayName: data.name });
     }
     return (
         <div className='h-screen flex justify-center items-center'>
             <div class="card  bg-base-100 shadow-xl">
                 <div class="card-body">
-                    <h2 class="card-title justify-center font-bold">Login</h2>
+                    <h2 class="card-title justify-center font-bold">Sign Up</h2>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div class="form-control w-full max-w-xs">
                             <label class="label">
+                                <span class="label-text">Name</span>
+                            </label>
+                            <input
+                                type="text"
+                                placeholder="Your Name"
+                                class="input input-bordered w-full max-w-xs"
+                                {...register("name", {
+                                    required: {
+                                        value: true,
+                                        message: 'Name is Required'
+                                    }
+                                })}
+                            />
+                            <label class="label">
+                                {errors.name?.type === 'required' && <span class="label-text-alt text-red-500">{errors.name.message}</span>}
+                            </label>
+                        </div>
+                        <div class="form-control w-full max-w-xs">
+                            <label class="label">
                                 <span class="label-text">Email</span>
-
                             </label>
                             <input
                                 type="email"
@@ -105,9 +137,9 @@ const Login = () => {
                         <div className='my-2'>
                             {error}
                         </div>
-                        <input className='btn w-full max-w-xs text-white' type="submit" value="Login" />
+                        <input className='btn w-full max-w-xs text-white' type="submit" value="Sign Up" />
                     </form>
-                    <small><span className='text-accent font-bold'>New to Doctors Portal?</span> <Link to='/signup'>Create New Account</Link></small>
+                    <small><span className='text-accent font-bold'>Already have an account?</span> <Link to='/login'>Sign In</Link></small>
                     <div class="divider">OR</div>
                     <button
                         onClick={() => signInWithGoogle()}
@@ -119,4 +151,4 @@ const Login = () => {
     );
 };
 
-export default Login;
+export default Signup;
