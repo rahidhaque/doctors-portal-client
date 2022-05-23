@@ -10,7 +10,8 @@ const AvailableAppointment = ({ service, setTreatment }) => {
                     <p>{
                         service.slots.length > 0 ? <span>{service.slots[0]}</span> : <span className='text-red-500'>No slot avaiable</span>
                     }</p>
-                    <small>{service.slots.length} {service.slots.length > 1 ? 'spaces' : 'space'} avaiable</small>
+                    <p><small>{service.slots.length} {service.slots.length > 1 ? 'spaces' : 'space'} avaiable</small></p>
+                    <p><small>Price: ${service.price}</small></p>
                     <div className="card-actions justify-center">
                         {/* <button disabled={service.slots.length === 0} onClick={() => setTreatment(service)} className="btn btn-primary text-white">Book Appointment</button> */}
                         <label htmlFor="booking-modal" disabled={service.slots.length === 0} onClick={() => setTreatment(service)} className="btn btn-sm btn-primary text-white bg-gradient-to-r from-secondary to-primary">Book Appointment</label>

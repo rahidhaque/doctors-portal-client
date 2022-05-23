@@ -8,7 +8,7 @@ const ManageDoctors = () => {
     const [deleteDoctor, setDeleteDoctor] = useState(null);
     const { data: doctors, isLoading, refetch } = useQuery('doctors', () => fetch('http://localhost:5000/doctor', {
         headers: {
-            authorization: `Bearer ${localStorage.getItem('accessToken')}`
+            'authorization': `Bearer ${localStorage.getItem('accessToken')}`
         }
 
     }).then(res => res.json()))
